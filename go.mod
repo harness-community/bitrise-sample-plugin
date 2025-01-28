@@ -1,4 +1,4 @@
-module github.com/bitrise-steplib/bitrise-step-android-lint
+module github.com/DevanshMathur19/step-template
 
 go 1.16
 
