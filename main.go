@@ -33,5 +33,5 @@ func main() {
 	}
 
 	stepconf.Print(config)
-	logger.Donef("  Done")
+	logger.Donef("Done")
 }
