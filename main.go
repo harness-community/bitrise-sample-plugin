@@ -42,7 +42,7 @@ func main() {
 	}
 
 	// Prepare the key-value pair content
-	fileContent := fmt.Sprintf("EXPORTED_DEPLOY_DIR=%s\n", config.DeployDir)
+	fileContent := fmt.Sprintf("EXPORTED_BITRISE_DEPLOY_DIR=%s\n", config.DeployDir)
 
 	// Write to the file specified by DRONE_OUTPUT
 	err := os.WriteFile(droneOutputPath, []byte(fileContent), 0644)
