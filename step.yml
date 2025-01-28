@@ -45,7 +45,7 @@ is_skippable: false
 
 toolkit:
   go:
-    package_name: github.com/bitrise-steplib/bitrise-step-android-lint
+    package_name: github.com/DevanshMathur19/step-template
 
 inputs:
   - project_location: $BITRISE_SOURCE_DIR
