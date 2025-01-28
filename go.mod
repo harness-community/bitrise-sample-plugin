@@ -1,4 +1,4 @@
-module github.com/DevanshMathur19/step-template
+module github.com/harness-community/bitrise-sample-plugin
 
 go 1.16
 
