@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/bitrise-io/go-steputils/stepconf"
@@ -34,13 +35,16 @@ func main() {
 
 	stepconf.Print(config)
 
-	// Export DeployDir as an environment variable
-	err := os.Setenv("EXPORTED_DEPLOY_DIR", config.DeployDir)
+	// Write the key-value pair to a file named DRONE_OUTPUT
+	fileName := "DRONE_OUTPUT"
+	fileContent := fmt.Sprintf("EXPORTED_DEPLOY_DIR=%s\n", config.DeployDir)
+
+	err := os.WriteFile(fileName, []byte(fileContent), 0644)
 	if err != nil {
-		failf("Failed to set EXPORTED_BITRISE_DEPLOY_DIR: %v\n", err)
+		failf("Failed to write to %s: %v\n", fileName, err)
 	}
 
-	logger.Infof("Exported DeployDir as EXPORTED_BITRISE_DEPLOY_DIR=%s", config.DeployDir)
+	logger.Infof("Written to file %s: %s", fileName, fileContent)
 
 	logger.Donef("Done")
 }
