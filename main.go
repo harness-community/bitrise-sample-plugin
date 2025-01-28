@@ -51,4 +51,6 @@ func main() {
 	}
 
 	logger.Infof("Written to file %s: %s", droneOutputPath, fileContent)
+
+	logger.Donef("Done")
 }
