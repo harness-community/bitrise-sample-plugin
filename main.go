@@ -35,16 +35,20 @@ func main() {
 
 	stepconf.Print(config)
 
-	// Write the key-value pair to a file named DRONE_OUTPUT
-	fileName := "DRONE_OUTPUT"
-	fileContent := fmt.Sprintf("EXPORTED_DEPLOY_DIR=%s\n", config.DeployDir)
-
-	err := os.WriteFile(fileName, []byte(fileContent), 0644)
-	if err != nil {
-		failf("Failed to write to %s: %v\n", fileName, err)
+	// Get the DRONE_OUTPUT environment variable
+	droneOutputPath := os.Getenv("DRONE_OUTPUT")
+	if droneOutputPath == "" {
+		failf("Environment variable DRONE_OUTPUT is not set.\n")
 	}
 
-	logger.Infof("Written to file %s: %s", fileName, fileContent)
+	// Prepare the key-value pair content
+	fileContent := fmt.Sprintf("EXPORTED_DEPLOY_DIR=%s\n", config.DeployDir)
 
-	logger.Donef("Done")
+	// Write to the file specified by DRONE_OUTPUT
+	err := os.WriteFile(droneOutputPath, []byte(fileContent), 0644)
+	if err != nil {
+		failf("Failed to write to %s: %v\n", droneOutputPath, err)
+	}
+
+	logger.Infof("Written to file %s: %s", droneOutputPath, fileContent)
 }
