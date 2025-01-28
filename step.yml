@@ -25,9 +25,9 @@ description: |-
   - [Android Build](https://www.bitrise.io/integrations/steps/android-build)
   - [Android Unit Test](https://www.bitrise.io/integrations/steps/android-unit-test)
   - [[BETA] Virtual Device Testing for Android](https://www.bitrise.io/integrations/steps/virtual-device-testing-for-android)
-website: https://github.com/bitrise-steplib/bitrise-step-android-lint
-source_code_url: https://github.com/bitrise-steplib/bitrise-step-android-lint
-support_url: https://github.com/bitrise-steplib/bitrise-step-android-lint/issues
+website: https://github.com/DevanshMathur19/step-template
+source_code_url: https://github.com/DevanshMathur19/step-template
+support_url: https://github.com/DevanshMathur19/step-template/issues
 host_os_tags:
   - osx-10.10
   - ubuntu-16.04
