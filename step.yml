@@ -1,127 +1,101 @@
-title: Script
+title: "Android Lint"
 summary: |-
-  Run any custom script you want. The power is in your hands. Use it wisely!
+  Runs Lint on your Android project source files and detects potential syntax errors to keep your code error free.
 description: |-
-
-  Run any custom script you want as part of your Bitrise build. All you need to do is specifying the script runner  
-  (the default is bash), add the script, and run a build. 
-  
-  You can also read the script from a file.
+  It highlights the code line where the error is found, explains the type of error and suggests corrections. The Step does not make the build fail if it spots any structural errors in your code. If you have inserted the **Deploy to Bitrise.io** Step in the Workflow, the tes results will be available in a viewable or downloadable Lint Report HTML or XML file which you can access on the Build's APPS & ARTIFACTS page.
 
   ### Configuring the Step
 
-  1. Set the **Execute with/runner binary** input.
-
-     Either define the path of the executor, or simply just add its name if you know it is available in the PATH, such as `ruby` or `python`. It can even be a command, such as `go run`.  
-
-  1. Write your script in the **Script content** input or specify a script file.
-
-     If you have a script in your repository, you can simply run it from the file, either by calling it in the **Script content** input  
-     or, optionally, by specifying the path to it in the **Script file path** input. 
-     
-     Be aware that relative paths are relative to the value set in the **Working directory** input - by default, it is your app's source directory.
+  1. Set the **Project Location** input which, by default, points to the root directory of your Android project.
+  2. Set the module and variant you wish to lint in the **Module** and **Variant** fields.
+  
+  Optionally, you can modify these inputs:
+  1. You can specify where the Lint reports should be found once the Step has run if you overwrite the **Report location pattern** input.
+  2. You can set if the Step should cache build outputs and dependencies, only the dependencies or nothing at all in the **Set level of cache** input.
+  3. You can set any gradle argument to the gradle task in the **Additional Gradle Arguments** input.
 
   ### Troubleshooting
-
-  If the script fails, check the executor first - obviously, a Python script will not work with a bash runner.
-
-  Note that in certain cases, the filename or the filepath actually matters. For example, the `go run` command only accepts `.go` files.
-
+  Make sure you insert the Step before a build Step.
+  Make sure you type the correct module and variant names in the respective fields of the Step. If you are unsure about the exact names, you can check them in the **Project Structure** dialog of your project in Android Studio.
+  
   ### Useful links
-
-  * [System reports to check out the pre-installed executors](https://github.com/bitrise-io/bitrise.io/tree/master/system_reports)
-  * [Exporting to Test Reports from custom Script Steps](https://devcenter.bitrise.io/testing/exporting-to-test-reports-from-custom-script-steps/)
+  - [Improve your code with lint checks](https://developer.android.com/studio/write/lint)
 
   ### Related Steps
-
-  * [Script Runner](https://www.bitrise.io/integrations/steps/script-runner)
-  * [Remote Bash Script Runner](https://www.bitrise.io/integrations/steps/remote-script-runner)
-website: https://github.com/bitrise-io/steps-script
-source_code_url: https://github.com/bitrise-io/steps-script
-support_url: https://github.com/bitrise-io/steps-script/issues
+  - [Android Build](https://www.bitrise.io/integrations/steps/android-build)
+  - [Android Unit Test](https://www.bitrise.io/integrations/steps/android-unit-test)
+  - [[BETA] Virtual Device Testing for Android](https://www.bitrise.io/integrations/steps/virtual-device-testing-for-android)
+website: https://github.com/bitrise-steplib/bitrise-step-android-lint
+source_code_url: https://github.com/bitrise-steplib/bitrise-step-android-lint
+support_url: https://github.com/bitrise-steplib/bitrise-step-android-lint/issues
 host_os_tags:
-  - osx
-  - ubuntu
-project_type_tags: []
+  - osx-10.10
+  - ubuntu-16.04
+
+project_type_tags:
+  - android
+  - react-native
+
 type_tags:
-  - utility
-is_requires_admin_user: false
+  - test
+
+is_requires_admin_user: true
 is_always_run: false
 is_skippable: false
+
+toolkit:
+  go:
+    package_name: github.com/bitrise-steplib/bitrise-step-android-lint
+
 inputs:
-  - content: |-
-      #!/usr/bin/env bash
-      # fail if any commands fails
-      set -e
-      # make pipelines' return status equal the last command to exit with a non-zero status, or zero if all commands exit successfully
-      set -o pipefail
-      # debug log
-      set -x
-
-      # write your script here
-      echo "Hello World!"
-
-      # or run a script from your repository, like:
-      # bash ./path/to/script.sh
-      # not just bash, e.g.:
-      # ruby ./path/to/script.rb
+  - project_location: $BITRISE_SOURCE_DIR
     opts:
-      title: "Script content"
-      description: |
-        Type your script here.
-
-        **Make sure that it returns a non zero exit code in case of an error!**
-        The step will only fail if your script returns with a non zero exit code!
-      is_expand: false
+      title: Project Location
+      summary: "The root directory of your android project, for example, where your root build gradle file exists (also gradlew, settings.gradle, etc...)"
+      description: "The root directory of your android project, for example, where your root build gradle file exists (also gradlew, settings.gradle, etc...)"
       is_required: true
-  - runner_bin: "/bin/bash"
+  - module: ""
     opts:
-      category: Config
-      title: "Execute with / runner binary"
+      title: Module
+      summary: |
+        Set the module that you want to lint. To see your available modules please open your project in Android Studio and go in [Project Structure] and see the list on the left.
       description: |
-        The executor to be used for running the script.
-        If it's available in the PATH you can just
-        specify `ruby` or `python`, generally
-        if you know the path of the executor you should
-        define that, like `/bin/bash`.
-
-        You can even specify an execution command
-        like `go run` instead of just a binary.
+        Set the module that you want to lint. To see your available modules please open your project in Android Studio and go in [Project Structure] and see the list on the left.
+      is_required: false
+  - variant: ""
+    opts:
+      title: Variant
+      summary: |
+        Set the variant that you want to lint. To see your available variants please open your project in Android Studio and go in [Project Structure] -> variants section.
+      description: |
+        Set the variant that you want to lint. To see your available variants please open your project in Android Studio and go in [Project Structure] -> variants section.
+      is_required: false
+  - report_path_pattern: "*/build/reports/lint-results*.html"
+    opts:
+      category: Options
+      title: Report location pattern
+      summary: |
+        Will find the report file with the given pattern. If you need the xml file then you can use: "*/build/reports/lint-results*.xml"
+      description: |
+        Will find the report file with the given pattern. If you need the xml file then you can use: "*/build/reports/lint-results*.xml"
       is_required: true
-  - working_dir: "$BITRISE_SOURCE_DIR"
+  - cache_level: "only_deps"
     opts:
-      category: Config
-      title: "Working directory"
-      description: |
-        This directory will be set as the current working
-        directory for the script.
-
-        Any relative path in the Script (content) will be
-        relative to this directory.
-  - script_file_path: ""
-    opts:
-      category: Config
-      title: "Script file path"
-      description: |
-        Save the specified script content to this path
-        before execution. The file will be removed after
-        the script finishes.
-
-        Generally you don't have to define this but
-        there might be cases where the file's name or path
-        actually matters.
-        For example `go run` only accepts `.go` files.
-
-        If you specify a relative path then it will be
-        relative to the *working directory* (which you
-        can optionally specify as well).
-  - is_debug: "no"
-    opts:
-      category: Debug
-      title: "Debug print?"
-      description: |
-        If debug=yes the step will print debug infos about
-        the working dir, tmp file path, exit code, etc.
+      category: Options
+      title: Set the level of cache
+      description: |-
+        `all` - will cache build cache and dependencies
+        `only_deps` - will cache dependencies only
+        `none` - will not cache anything
+      is_required: true
       value_options:
-        - "no"
-        - "yes"
+      - "all"
+      - "only_deps"
+      - "none"
+  - arguments:
+    opts:
+      category: Options
+      title: Additional Gradle Arguments 
+      summary: Extra arguments passed to the gradle task
+      description: Extra arguments passed to the gradle task
+      is_required: false
