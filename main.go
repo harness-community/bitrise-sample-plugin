@@ -33,5 +33,14 @@ func main() {
 	}
 
 	stepconf.Print(config)
+
+	// Export DeployDir as an environment variable
+	err := os.Setenv("EXPORTED_DEPLOY_DIR", config.DeployDir)
+	if err != nil {
+		failf("Failed to set EXPORTED_BITRISE_DEPLOY_DIR: %v\n", err)
+	}
+
+	logger.Infof("Exported DeployDir as EXPORTED_BITRISE_DEPLOY_DIR=%s", config.DeployDir)
+
 	logger.Donef("Done")
 }
